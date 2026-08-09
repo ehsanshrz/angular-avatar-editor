@@ -142,8 +142,6 @@ export class AngularAvatarEditor implements AfterViewInit, OnChanges, OnDestroy 
     if (!this.imageState) return canvas;
     const cropRect = this.getCroppingRect();
     const img = this.imageState;
-    const [bx, by] = this.getBorderPixels();
-
     const srcX = cropRect.x * img.width;
     const srcY = cropRect.y * img.height;
     const srcW = cropRect.width * img.width;
@@ -160,7 +158,6 @@ export class AngularAvatarEditor implements AfterViewInit, OnChanges, OnDestroy 
     ctx.drawImage(img.resource, -srcX, -srcY, img.width, img.height);
     ctx.restore();
 
-    void bx; void by;
     return canvas;
   }
 
@@ -172,7 +169,6 @@ export class AngularAvatarEditor implements AfterViewInit, OnChanges, OnDestroy 
     if (!this.imageState) return canvas;
 
     const ctx = canvas.getContext('2d')!;
-    const [bx, by] = this.getBorderPixels();
     const { x, y, width: cw, height: ch } = this.getCroppingRect();
     const img = this.imageState;
 
@@ -188,7 +184,6 @@ export class AngularAvatarEditor implements AfterViewInit, OnChanges, OnDestroy 
     ctx.drawImage(img.resource, srcX, srcY, srcW, srcH, 0, 0, this.width, this.height);
     ctx.restore();
 
-    void bx; void by;
     return canvas;
   }
 
@@ -265,7 +260,20 @@ export class AngularAvatarEditor implements AfterViewInit, OnChanges, OnDestroy 
     if (typeof source === 'string') {
       img.src = source;
     } else {
-      img.src = URL.createObjectURL(source);
+      const objectUrl = URL.createObjectURL(source);
+      img.onload = () => {
+        URL.revokeObjectURL(objectUrl);
+        this.imageState = { width: img.naturalWidth, height: img.naturalHeight, resource: img };
+        this.pos = this.position ? { ...this.position } : { x: 0.5, y: 0.5 };
+        this.loadSuccess.emit(this.imageState);
+        this.redraw();
+        this.imageReady.emit();
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(objectUrl);
+        this.loadFailure.emit();
+      };
+      img.src = objectUrl;
     }
   }
 
