@@ -1,79 +1,262 @@
-body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: #f5f7fa;
-  margin: 0;
-  padding: 0;
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
-.avatar-editor-demo {
-  max-width: 420px;
-  margin: 40px auto;
-  padding: 24px;
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.1);
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-5px); }
+  100% { transform: translateY(0px); }
+}
+
+body {
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 20px;
+  justify-content: center;
+}
+
+.app-container {
+  width: 100%;
+  max-width: 800px;
+  padding: 20px;
+  perspective: 1000px;
+}
+
+/* Glassmorphism Card Styling */
+::ng-deep .editor-card {
+  border-radius: 24px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+  background: rgba(255, 255, 255, 0.85) !important;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  overflow: hidden;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+
+
+.header-content {
+  text-align: center;
+  padding: 30px 20px 10px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 h1 {
-  margin: 0;
-  font-size: 1.6rem;
-  color: #1a1a2e;
+  margin: 0 0 8px;
+  font-size: 1.8rem;
+  color: #1e293b;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  background: linear-gradient(90deg, #1e293b, #3b82f6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .subtitle {
   margin: 0;
-  color: #666;
-  font-size: 0.9rem;
+  color: #64748b;
+  font-size: 0.95rem;
+  font-weight: 500;
 }
 
+.editor-layout {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 32px;
+  padding: 32px;
+}
+
+@media (max-width: 768px) {
+  .editor-layout {
+    flex-direction: column;
+  }
+}
+
+/* Editor Wrapper */
 .editor-wrapper {
   position: relative;
-  border-radius: 8px;
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
-  background: #eee;
-}
-
-.placeholder {
-  position: absolute;
-  inset: 0;
+  background: rgba(255, 255, 255, 0.5);
+  box-shadow: inset 0 2px 10px rgba(0,0,0,0.05), 0 10px 20px -5px rgba(0,0,0,0.1);
   display: flex;
-  align-items: center;
   justify-content: center;
-  color: #999;
-  font-size: 0.9rem;
-  pointer-events: none;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  animation: float 6s ease-in-out infinite;
+  flex-shrink: 0;
 }
 
-.control-group {
-  width: 100%;
+.controls-column {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 20px;
+  flex-grow: 1;
 }
 
-.control-group label {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #333;
-}
-
-.control-row {
-  width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  justify-content: center;
+/* Toolbar */
+::ng-deep .main-toolbar {
+  padding: 12px !important;
+  border-radius: 16px !important;
+  background: rgba(255, 255, 255, 0.6) !important;
+  border: 1px solid rgba(255, 255, 255, 0.8) !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05) !important;
+  backdrop-filter: blur(10px);
 }
 
 .file-input {
   display: none;
 }
 
-.file-label {
+.rotate-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+/* Zoom Control */
+.control-group {
+  padding: 20px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  backdrop-filter: blur(10px);
+}
+
+.control-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.control-header label {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #334155;
+}
+
+.zoom-value {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #3b82f6;
+  background: rgba(59, 130, 246, 0.1);
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid rgba(59, 130, 246, 0.2);
+}
+
+.zoom-slider-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.flex-grow {
+  flex-grow: 1;
+}
+
+/* Toggle Actions */
+.toggle-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* Utilities */
+::ng-deep .w-full {
+  width: 100% !important;
+}
+
+::ng-deep .p-button {
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+  font-family: 'Outfit', sans-serif !important;
+  font-weight: 600 !important;
+}
+
+::ng-deep .p-button:hover {
+  transform: translateY(-2px);
+}
+
+/* Save Button */
+.save-action {
+  margin-top: 12px;
+}
+
+::ng-deep .p-splitbutton {
+  display: flex;
+  width: 100%;
+  gap: 0 !important;
+}
+
+::ng-deep .save-btn .p-splitbutton-button {
+  background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%) !important;
+  border: none !important;
+  box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.5) !important;
+  padding: 1rem !important;
+  font-size: 1.1rem !important;
+  border-radius: 12px !important;
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  flex-grow: 1;
+}
+
+::ng-deep .save-btn .p-splitbutton-dropdown {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+  border: none !important;
+  border-left: 1px solid rgba(255,255,255,0.2) !important;
+  border-radius: 12px !important;
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  width: 3rem !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.5) !important;
+}
+
+::ng-deep .save-btn .p-button:hover {
+  box-shadow: 0 15px 35px -5px rgba(59, 130, 246, 0.6) !important;
+}
+
+/* SplitButton Menu Overlay Styling */
+::ng-deep .p-tieredmenu, ::ng-deep .p-menu {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(10px);
+  padding: 8px;
+  min-width: 200px;
+  margin-top: 8px;
+}
+
+::ng-deep .p-menuitem-link {
+  display: flex !important;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px !important;
+  text-decoration: none;
+  color: #334155 !important;
+  font-family: 'Outfit', sans-serif !important;
+  font-weight: 600 !important;
+  border-radius: 8px;
+  transition: all 0.2s ease;
   cursor: pointer;
+}
+
+::ng-deep .p-menuitem-link:hover {
+  background: rgba(59, 130, 246, 0.1) !important;
+  color: #3b82f6 !important;
 }

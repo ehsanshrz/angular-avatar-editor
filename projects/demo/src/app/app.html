@@ -1,68 +1,73 @@
 <p-toast></p-toast>
 
-<div class="avatar-editor-demo">
-  <h1>Angular Avatar Editor</h1>
-  <p class="subtitle">Powered by <strong>Angular 22</strong> &amp; <strong>Optimus UI</strong></p>
+<div class="app-container">
+  <p-card styleClass="editor-card">
+    <ng-template pTemplate="header">
+      <div class="header-content">
+        <h1>Angular Avatar Editor</h1>
+        <p class="subtitle">Powered by Angular 22 &amp; Optimus UI</p>
+      </div>
+    </ng-template>
 
-  <div class="editor-wrapper">
-    <lib-avatar-editor
-      #editor
-      [image]="image"
-      [width]="width"
-      [height]="height"
-      [border]="border"
-      [scale]="scale"
-      [rotate]="rotate"
-      [borderRadius]="borderRadius"
-      [showGrid]="showGrid"
-      [enableWheelZoom]="true"
-      [color]="[0, 0, 0, 0.6]"
-      (loadSuccess)="onLoadSuccess()"
-      (loadFailure)="onLoadFailure()"
-      (requestScaleChange)="onScaleChange($event)"
-    ></lib-avatar-editor>
-  </div>
+    <div class="editor-layout">
+      <!-- Editor Display -->
+      <div class="editor-wrapper">
+        <lib-avatar-editor
+          #editor
+          [image]="image"
+          [width]="width"
+          [height]="height"
+          [border]="border"
+          [scale]="scale"
+          [rotate]="rotate"
+          [borderRadius]="borderRadius"
+          [showGrid]="showGrid"
+          [enableWheelZoom]="true"
+          [color]="[0, 0, 0, 0.6]"
+          (loadSuccess)="onLoadSuccess()"
+          (loadFailure)="onLoadFailure()"
+          (requestScaleChange)="onScaleChange($event)"
+        ></lib-avatar-editor>
+      </div>
+      
+      <!-- Controls Column -->
+      <div class="controls-column">
+        <!-- Toolbar for Upload & Rotate -->
+        <p-toolbar styleClass="main-toolbar">
+          <div class="p-toolbar-group-start">
+            <p-button icon="pi pi-upload" label="Choose Image" (onClick)="fileInput.click()" pTooltip="Upload an image to edit" tooltipPosition="top"></p-button>
+            <input #fileInput id="fileInput" type="file" accept="image/*" (change)="onFileChange($event)" class="file-input" />
+          </div>
+          <div class="p-toolbar-group-end rotate-buttons">
+            <p-button icon="pi pi-undo" [rounded]="true" [text]="true" severity="secondary" (onClick)="onRotateLeft()" pTooltip="Rotate Left" tooltipPosition="top"></p-button>
+            <p-button icon="pi pi-refresh" [rounded]="true" [text]="true" severity="secondary" (onClick)="onRotateRight()" pTooltip="Rotate Right" tooltipPosition="top"></p-button>
+          </div>
+        </p-toolbar>
 
-  <!-- File upload -->
-  <div class="control-row">
-    <label class="file-label" for="fileInput">
-      <p-button icon="pi pi-upload" label="Choose Image" severity="secondary"></p-button>
-    </label>
-    <input id="fileInput" type="file" accept="image/*" (change)="onFileChange($event)" class="file-input" />
-  </div>
+        <!-- Zoom Control -->
+        <div class="control-group">
+          <div class="control-header">
+            <label>Zoom Level</label>
+            <span class="zoom-value">{{ scale | number:'1.1-2' }}&times;</span>
+          </div>
+          <div class="zoom-slider-container">
+            <p-button icon="pi pi-minus" [rounded]="true" [text]="true" severity="secondary" (onClick)="zoomOut()"></p-button>
+            <p-slider [(ngModel)]="scale" [min]="0.1" [max]="4" [step]="0.05" styleClass="w-full" class="flex-grow"></p-slider>
+            <p-button icon="pi pi-plus" [rounded]="true" [text]="true" severity="secondary" (onClick)="zoomIn()"></p-button>
+          </div>
+        </div>
 
-  <!-- Zoom slider -->
-  <div class="control-group">
-    <label>Zoom: {{ scale | number:'1.1-2' }}&times;</label>
-    <p-slider
-      [(ngModel)]="scale"
-      [min]="0.1"
-      [max]="4"
-      [step]="0.05"
-      styleClass="w-full"
-    ></p-slider>
-  </div>
+        <!-- Action Toggles -->
+        <div class="toggle-actions">
+          <p-toggleButton [(ngModel)]="showGrid" onLabel="Hide Grid" offLabel="Show Grid" onIcon="pi pi-eye-slash" offIcon="pi pi-th-large" styleClass="w-full p-button-secondary"></p-toggleButton>
+          <p-button [label]="borderRadius > 0 ? 'Square Crop' : 'Circle Crop'" [icon]="borderRadius > 0 ? 'pi pi-stop' : 'pi pi-circle'" severity="secondary" styleClass="w-full" (onClick)="onToggleCircle()"></p-button>
+        </div>
 
-  <!-- Rotate buttons -->
-  <div class="control-row">
-    <p-button icon="pi pi-undo" label="Rotate Left" severity="secondary" (onClick)="onRotateLeft()"></p-button>
-    <p-button icon="pi pi-refresh" label="Rotate Right" severity="secondary" (onClick)="onRotateRight()"></p-button>
-    <p-button
-      [label]="showGrid ? 'Hide Grid' : 'Show Grid'"
-      icon="pi pi-th-large"
-      severity="secondary"
-      (onClick)="onToggleGrid()"
-    ></p-button>
-    <p-button
-      [label]="borderRadius > 0 ? 'Square Crop' : 'Circle Crop'"
-      icon="pi pi-circle"
-      severity="secondary"
-      (onClick)="onToggleCircle()"
-    ></p-button>
-  </div>
-
-  <!-- Save -->
-  <div class="control-row">
-    <p-button icon="pi pi-download" label="Save Avatar" (onClick)="onSave()"></p-button>
-  </div>
+        <!-- Save Button -->
+        <div class="save-action">
+          <p-splitButton icon="pi pi-download" label="Save as PNG" [model]="saveOptions" styleClass="w-full save-btn" (onClick)="onSave()" appendTo="body"></p-splitButton>
+        </div>
+      </div>
+    </div>
+  </p-card>
 </div>

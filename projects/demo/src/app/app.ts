@@ -6,11 +6,29 @@ import { SliderModule } from '@openng/optimus-ui/slider';
 import { ButtonModule } from '@openng/optimus-ui/button';
 import { ToastModule } from '@openng/optimus-ui/toast';
 import { MessageService } from '@openng/optimus-ui/api';
+import { CardModule } from '@openng/optimus-ui/card';
+import { ToolbarModule } from '@openng/optimus-ui/toolbar';
+import { ToggleButtonModule } from '@openng/optimus-ui/togglebutton';
+import { TooltipModule } from '@openng/optimus-ui/tooltip';
+import { SplitButtonModule } from '@openng/optimus-ui/splitbutton';
+import { MenuItem } from '@openng/optimus-ui/api';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, FormsModule, AngularAvatarEditor, SliderModule, ButtonModule, ToastModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    AngularAvatarEditor,
+    SliderModule,
+    ButtonModule,
+    ToastModule,
+    CardModule,
+    ToolbarModule,
+    ToggleButtonModule,
+    TooltipModule,
+    SplitButtonModule
+  ],
   providers: [MessageService],
   templateUrl: './app.html',
   styleUrl: './app.css',
@@ -26,6 +44,11 @@ export class App {
   width = 250;
   height = 250;
   border = 40;
+
+  saveOptions: MenuItem[] = [
+    { label: 'Save as JPEG', icon: 'pi pi-image', command: () => this.onSave('image/jpeg', 'avatar.jpg') },
+    { label: 'Save as WebP', icon: 'pi pi-image', command: () => this.onSave('image/webp', 'avatar.webp') }
+  ];
 
   constructor(private messageService: MessageService) {}
 
@@ -54,22 +77,22 @@ export class App {
     this.borderRadius = this.borderRadius === 0 ? this.width / 2 : 0;
   }
 
-  onSave(): void {
+  onSave(mimeType = 'image/png', filename = 'avatar.png'): void {
     if (!this.editor || !this.image) {
       this.messageService.add({ severity: 'warn', summary: 'No image', detail: 'Please select an image first.' });
       return;
     }
     const canvas = this.editor.getImageScaledToCanvas();
-    canvas.toBlob((blob) => {
+    canvas.toBlob((blob: Blob | null) => {
       if (!blob) return;
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'avatar.png';
+      a.download = filename;
       a.click();
       URL.revokeObjectURL(url);
-    }, 'image/png');
-    this.messageService.add({ severity: 'success', summary: 'Saved', detail: 'Avatar downloaded successfully.' });
+    }, mimeType);
+    this.messageService.add({ severity: 'success', summary: 'Saved', detail: `Avatar downloaded as ${filename}.` });
   }
 
   onLoadSuccess(): void {
@@ -82,5 +105,13 @@ export class App {
 
   onScaleChange(value: number): void {
     this.scale = value;
+  }
+
+  zoomIn(): void {
+    this.scale = Math.min(4, this.scale + 0.1);
+  }
+
+  zoomOut(): void {
+    this.scale = Math.max(0.1, this.scale - 0.1);
   }
 }
