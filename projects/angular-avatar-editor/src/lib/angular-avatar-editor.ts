@@ -475,6 +475,12 @@ export class AngularAvatarEditor implements AfterViewInit, OnChanges, OnDestroy 
     const delta = e.deltaY > 0 ? -0.1 : 0.1;
     this.requestScaleChange.emit(Math.max(0.1, this.scale + delta));
   }
+    onWheel2(e: WheelEvent): void {
+    if (!this.enableWheelZoom) return;
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? -0.1 : 0.1;
+    this.requestScaleChange.emit(Math.max(0.1, this.scale + delta));
+  }
 
   onKeyDown(e: KeyboardEvent): void {
     const step = e.shiftKey ? 10 : 1;
