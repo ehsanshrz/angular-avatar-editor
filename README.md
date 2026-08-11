@@ -25,6 +25,7 @@ Inspired by [react-avatar-editor](https://github.com/mosch/react-avatar-editor).
 
 ## Project structure
 
+
 ```
 projects/
   angular-avatar-editor/   # Reusable Angular library
